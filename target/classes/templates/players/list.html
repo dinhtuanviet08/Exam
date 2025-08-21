@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Players</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+<div class="container">
+    <h1 class="mb-4">Player Information</h1>
+
+    <div th:if="${msg}" class="alert alert-success" th:text="${msg}"></div>
+
+    <div class="mb-3">
+        <a class="btn btn-primary" th:href="@{/players/new}">+ New Player</a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Player Name</th>
+            <th>Player Age</th>
+            <th>Index name</th>
+            <th>Value</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${players}">
+            <td th:text="${p.playerId}">1</td>
+            <td th:text="${p.name}">name</td>
+            <td th:text="${p.age}"></td>
+            <td th:text="${p.indexer.name}">speed</td>
+            <td>
+                <span th:text="${#lists.isEmpty(p.playerId) ? '' : ''}"></span>
+                <!-- Fetch first value via small inline call -->
+                <span th:with="vals=${@playerIndexRepository.findByPlayer_PlayerId(p.playerId)}"
+                      th:text="${#lists.isEmpty(vals) ? '-' : vals.get(0).value}">-</span>
+            </td>
+            <td>
+                <a class="btn btn-sm btn-secondary" th:href="@{'/players/' + ${p.playerId} + '/edit'}">Edit</a>
+                <form th:action="@{'/players/' + ${p.playerId} + '/delete'}" method="post" style="display:inline"
+                      onsubmit="return confirm('Delete this player?');">
+                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
